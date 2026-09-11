@@ -1,221 +1,142 @@
-# Bosch EasyControl (CT200 B) debugging notes
+# Bosch EasyControl (Pointt API) for Home Assistant
 
-Started as "decryption errors connecting via XMPP", ended with a fully
-working REST API client and a Home Assistant integration. Notes below so
-future-me (or anyone else hitting this) doesn't redo the investigation.
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+![Version](https://img.shields.io/github/manifest-json/v/stijnb1234/ha-bosch-pointt?filename=custom_components%2Fbosch_pointt%2Fmanifest.json)
 
-## TL;DR
+Home Assistant integration for the **Bosch EasyControl CT200 B** (and likely
+other EasyControl-branded thermostats) that talk to Bosch's newer **Pointt
+REST API** instead of the legacy XMPP protocol used by older Nefit/Bosch
+integrations.
 
-Firmware `05.04.00` (device: EasyControl CT200 B, HW10) dropped the old
-XMPP + AES-ECB protocol entirely. `bosch-thermostat-client` (and every
-XMPP-based fork/integration, including the reference
+If your EasyControl device is on firmware `05.04.00`+ and existing
+XMPP-based integrations (e.g. `bosch-thermostat-client`,
 [homeassistant-nefit-easy](https://github.com/RaimondB/homeassistant-nefit-easy))
-talks to a transport this device no longer speaks. It's not a credentials
-bug, not a library bug -- Bosch moved the backend.
+fail with decryption errors, this is why: Bosch retired the old XMPP + AES
+transport on newer firmware in favor of a plain HTTPS/OAuth2 API. This
+integration talks to that new API directly.
 
-The real thing now: a plain HTTPS REST API
-(`pointt-api.bosch-thermotechnology.com`) secured with OAuth2 (SingleKey
-ID), used by the official app via `okhttp`. No AES, no XMPP, just JSON.
+## Features
 
-## How we found this
+| Platform | Entities |
+|---|---|
+| `climate` | Thermostat: current/target temperature, clock (auto) / manual mode |
+| `sensor` | Outdoor Temperature, Indoor Humidity, Firmware Version, Hot Water System, System Pressure, Burner Modulation, Active Notifications |
+| `switch` | Away Mode, Fireplace Mode, Child Lock, Extra Hot Water*, Notification Light |
+| `binary_sensor` | Refill Needed |
+| `number` | Away Mode Temperature, Open Window Detection Temperature, Outdoor Sensor Offset |
 
-1. Reproduced the XMPP decrypt failures locally (`bosch_thermostat_client`
-   0.28.2, matches upstream issue
-   [#542](https://github.com/bosch-thermostat/home-assistant-bosch-custom-component/issues/542)
-   exactly -- same firmware, same lib version, same `bosch_cli` repro).
-2. Verified the AES key-derivation algorithm itself was correct (matches
-   upstream source, matches a manual test script) -- ruled out a code bug.
-3. Confirmed the *access key + password* combo was correct too (see
-   `archive_legacy_xmpp/` for the old investigation -- key derivation
-   script, brute-forced variant checks, all consistent, all still garbage
-   output). Not a credentials problem either.
-4. MITM'd the real EasyControl Android app with mitmproxy to see what it
-   actually talks to. Had to patch the app (`apk-mitm`, since Android
-   doesn't trust user-installed CAs by default from API 24+) and spoof the
-   Play Store installer ID (app has an installer-source check). Found: the
-   app never even connects to the old XMPP host (`xmpp.rrcng.ticx.boschtt.net`)
-   -- it's all `pointt-api.bosch-thermotechnology.com` now.
+\* disabled by default if your system's domestic hot water setup doesn't
+support it (reported as `used: false` by the API).
 
-## The real protocol
+Not exposed by this API: raw boiler-internal telemetry (flow/return temps,
+boiler-level fault codes) that older Nefit Easy integrations had. See
+[Known limitations](#known-limitations).
 
-- **Device API**: `https://pointt-api.bosch-thermotechnology.com/pointt-api/api/v1`
-- **Auth**: OAuth2 authorization_code + PKCE against SingleKey ID
-  (`https://singlekey-id.com/auth`), same pattern as a standard Duende
-  IdentityServer deployment.
-  - `client_id`: `BEAE0439-49D3-41B5-83D1-59B0971793F4` (the app's own,
-    reused here)
-  - Token endpoint: `https://singlekey-id.com/auth/connect/token`
-  - Scopes include `pointt.gateway.list`, `pointt.gateway.resource.rrcng.app`,
-    `offline_access`, etc.
-  - **The login form requires solving an hCaptcha.** That's a deliberate
-    anti-automation gate -- we don't script past it. Instead: log in
-    through your own real browser (you solve the captcha normally, same as
-    always), then script only the code-for-tokens exchange. See "Getting a
-    refresh token" below. `offline_access` scope means the resulting
-    `refresh_token` is long-lived and self-renews (rotates) on every use.
-- **Resources**: `GET/PUT /gateways/{serial}/resource/{path}`, e.g.
-  `/gateways/101273687/resource/zones/zn1/temperatureActual`. Values come
-  back as `{"id", "type", "value", "writeable", "unitOfMeasure", ...}`.
-  PUT body is just `{"value": ...}`.
-- Most string-typed togglables use `"true"`/`"false"` as literal strings,
-  not JSON booleans (confirmed from real captures). `extraDhw` is the one
-  oddball using `"on"`/`"off"`.
-- Full endpoint list with real example responses: **`bosch_api_reference.txt`**
-  (redacted -- no tokens/cookies/passwords, just paths and shapes).
+## Installation
 
-## Getting a refresh token (no proxy needed)
+### HACS (recommended)
 
-We originally got the first `refresh_token` by MITM'ing the app with
-mitmproxy (see "How we found this" -- that was for *discovering* the API in
-the first place, endpoints and all). For just obtaining/renewing a token
-once you already know the API, there's a much simpler way -- credit to
-[ha-bosch-buderus-heating's setup guide](https://github.com/SoftwareSchmied/ha-bosch-buderus-heating/blob/main/docs/setup.md)
-for the technique: **do the login in your own real browser**, and only
-script the final code-for-tokens exchange. No proxy, no rooted phone, no
-patched APK.
+1. HACS → Integrations → ⋮ (top right) → **Custom repositories**.
+2. Add this repository URL, category **Integration**.
+3. Search for "Bosch EasyControl" in HACS and install.
+4. Restart Home Assistant.
 
-Run:
+### Manual
+
+1. Copy `custom_components/bosch_pointt/` into `<config>/custom_components/`.
+2. Restart Home Assistant.
+
+## Setup
+
+The integration is fully UI-driven — no YAML.
+
+1. **Get a refresh token** (see below).
+2. Settings → Devices & Services → **Add Integration** → search "Bosch
+   EasyControl (Pointt API)".
+3. Paste the refresh token. The integration validates it against the API and
+   auto-discovers your device — no serial number needed.
+
+The token rotates on every use; the integration persists the new value into
+the config entry automatically, so this is normally a one-time step. You
+only need to repeat it if the token gets fully revoked (e.g. you change your
+Bosch account password).
+
+### Getting a refresh token
+
+Bosch's login form requires solving an hCaptcha, so this can't be scripted
+end-to-end — you log in normally through your own browser, and only the
+final code-for-tokens exchange is scripted.
+
 ```
-venv/Scripts/python.exe pointt_login.py
+python pointt_login.py
 ```
 
-It opens the SingleKey ID login page in your browser (same login as the
-app -- solve the captcha normally, enter your password only on the real
-`singlekey-id.com` page, never into this script or Home Assistant). After a
-successful login, the browser tries to navigate to a `com.bosch.rrc://...`
-link and fails (expected -- that's the app's custom URL scheme, no desktop
-app handles it). Open DevTools (F12) → Network tab, find that failed
-request, copy its full URL, and paste it into the script's prompt. It
-extracts the authorization `code`, exchanges it for tokens, and writes a
-fresh `refresh_token` to `pointt_credentials.json`.
+This opens the SingleKey ID login page (the same login the official app
+uses). Log in as usual — your password only ever goes to the real
+`singlekey-id.com`, never to this script or Home Assistant. After login, the
+browser tries to follow a `com.bosch.rrc://...` link and fails (expected —
+that's the app's custom URL scheme). Open DevTools (F12) → Network tab, find
+that failed request, copy its full URL, and paste it into the script's
+prompt when asked. It exchanges the authorization code for tokens and writes
+the refresh token to `pointt_credentials.json`.
 
-**That redirect URL contains a short-lived, one-time authorization code --
-don't share it, log it, or post it anywhere.** Same caution applies to
-`pointt_credentials.json` itself afterward (see Security notes).
+> That redirect URL contains a short-lived, one-time authorization code —
+> don't share, log, or post it anywhere. Treat `pointt_credentials.json` the
+> same way afterward: it holds a live, working (if narrowly-scoped) refresh
+> token for your Bosch account.
 
-Update `custom_components/bosch_pointt/const.py`'s `REFRESH_TOKEN` with the
-same value if you're running the HA integration's hardcoded-token setup.
+## How it works
 
-## Gaps vs. the old Nefit Easy integration
+- **API**: `https://pointt-api.bosch-thermotechnology.com/pointt-api/api/v1`
+  — plain HTTPS/JSON, `GET`/`PUT` on `/gateways/{serial}/resource/{path}`.
+- **Auth**: OAuth2 authorization_code + PKCE against SingleKey ID, using the
+  official app's own `client_id`. `offline_access` scope means the resulting
+  refresh token is long-lived and self-renews on every use.
+- The integration polls all known resource paths every 60s via a single
+  `DataUpdateCoordinator` and persists the rotated refresh token back into
+  the config entry.
 
-No boiler-internal telemetry (flow/return/supply temperature, cause/fault
-codes as raw boiler codes) turned up anywhere in ~1800 captured requests
-across multiple app sessions. `system/appliance/systemPressure` and
-`heatSources/modulation` (burner %) are the closest equivalents and are
-real, live values. `notifications` (`type: errorList`) is the actual
-cause-code equivalent -- just empty because nothing's currently faulted.
-Best guess: EasyControl's Pointt API abstracts at the zone/system level and
-genuinely doesn't expose the old KM-bus-style boiler internals Nefit Easy
-had.
+Full endpoint/response reference (redacted): [`bosch_api_reference.txt`](bosch_api_reference.txt).
 
-## Files in this folder
+## Known limitations
 
-- **`custom_components/bosch_pointt/`** -- the Home Assistant integration
-  (see below).
-- **`pointt_client.py`** -- minimal standalone script, same API client
-  logic without HA. Good for quick manual checks:
-  `venv/Scripts/python.exe pointt_client.py`
-- **`pointt_login.py`** -- one-time (or whenever-needed) login helper: real
-  browser login + scripted code-for-tokens exchange. See "Getting a refresh
-  token" below. This is the normal way to (re-)obtain a token now -- the
-  mitmproxy/APK-patching setup was only needed for the original API
-  discovery.
-- **`pointt_credentials.json`** -- `client_id` + `refresh_token`. **This is
-  a live credential for the Bosch account** -- treat it like a password.
-  Rotates automatically on use (both `pointt_client.py` and the HA
-  integration persist the new value after every refresh).
-- **`bosch_api_reference.txt`** -- redacted endpoint/response reference,
-  extracted from the mitmproxy capture.
-- **`mitm_dump_bosch.py`** -- the mitmproxy addon used for capturing (dumps
-  full request/response for any `bosch`/`singlekey` host to a text file).
-  Reusable if the API changes again or more endpoints need discovering:
-  `venv/Scripts/mitmdump.exe --listen-host 0.0.0.0 --listen-port 8080 --set tcp_hosts='.*boschtt\.net' -s mitm_dump_bosch.py`
-- **`easycontrol-patched.apks`** -- the patched EasyControl APK bundle
-  (cert pinning disabled, trusts mitmproxy's CA, debug-signed). Lets you
-  redo a MITM capture without re-running `apk-mitm` from scratch:
-  ```
-  # extract and install (phone connected via adb, USB debugging on):
-  cd apk_patched_reinstall && unzip -o ../easycontrol-patched.apks
-  adb uninstall com.bosch.tt.bosch.controlng
-  adb install-multiple -i com.android.vending base.apk split_config.*.apk
-  ```
-- **`archive_legacy_xmpp/`** -- the original (dead-end but instructive) XMPP
-  investigation: manual AES key-derivation script, algorithm-variant brute
-  force, old device pairing credentials (access key/password from the QR
-  code -- separate from the SingleKey ID account password), a backup of the
-  unpatched XMPP connector, and the original `connect_test.py`. Not useful
-  for this device anymore, but keeps the reasoning trail if a future
-  firmware/device needs it, or if you want to see how we ruled everything
-  else out first.
+- No boiler-internal telemetry (flow/return temperature, KM-bus-style fault
+  codes) — not exposed anywhere in the API. `heatSources/modulation`
+  (burner %) and `system/appliance/systemPressure` are the closest
+  equivalents; `notifications` is the real cause-code equivalent.
+- If the refresh token is fully revoked, there's no in-HA recovery flow —
+  re-run `pointt_login.py` and re-add the integration with the new token.
+- Only compile-checked and tested against one real EasyControl CT200 B unit
+  — other EasyControl hardware/firmware may expose slightly different
+  resource paths.
 
-## The Home Assistant integration (`custom_components/bosch_pointt/`)
+## Other files in this repo
 
-Install: copy the folder into `<ha config>/custom_components/`, restart HA,
-add via Settings → Devices & Services → Add Integration → "Bosch
-EasyControl (Pointt API)".
+These support development/debugging and aren't needed to just run the
+integration:
 
-**Auth is hardcoded** (`const.py`: `CLIENT_ID`, `REFRESH_TOKEN`,
-`DEVICE_ID`) -- personal-use shortcut, no in-HA login flow. Config flow just
-confirms/creates the single entry; no form beyond an optional device ID
-override. The refresh token rotates on every poll and the new value is
-written back into the config entry automatically (`__init__.py`), so it
-survives HA restarts -- you should basically never need to touch `const.py`
-again after first setup, unless the token gets fully revoked (e.g. you
-change your Bosch password). If that happens: run `pointt_login.py` (see
-"Getting a refresh token" above) and update `const.py` with the new value.
+- **`pointt_client.py`** — standalone script using the same API client
+  logic without Home Assistant, for quick manual checks.
+- **`mitm_dump_bosch.py`** — mitmproxy addon used to originally capture the
+  API from the official app; useful again if Bosch changes the API.
+- **`easycontrol-patched.apks`** — patched EasyControl APK (cert pinning
+  disabled) used for that capture. Not redistributed generally — see
+  Security notes.
+- **`archive_legacy_xmpp/`** — the original (dead-end) XMPP investigation
+  that led to discovering the Pointt API. Kept for the reasoning trail.
 
-### Entities
+## Security notes
 
-| Platform | Entity | Notes |
-|---|---|---|
-| `climate` | Thermostat | current/target temp, clock/manual mode (both confirmed against real app traffic) |
-| `sensor` | Outdoor Temperature, Indoor Humidity | |
-| `sensor` | Firmware Version, Hot Water System | informational |
-| `sensor` | System Pressure | bar, real appliance-level reading |
-| `sensor` | Burner Modulation | % from `heatSources/modulation` |
-| `sensor` | Active Notifications | count + raw list attribute; equivalent of "cause codes", currently always 0 (no faults seen) |
-| `switch` | Away Mode, Fireplace Mode, Child Lock | |
-| `switch` | Extra Hot Water | disabled by default -- not available on this system's DHW setup (`used: false` in the API) |
-| `switch` | Notification Light | wall unit LED toggle |
-| `binary_sensor` | Refill Needed | |
-| `number` | Away Mode Temperature, Open Window Detection Temperature, Outdoor Sensor Offset | writable settings, not in the reference integration |
+- `pointt_credentials.json` and `custom_components/bosch_pointt/secrets_local.py`
+  hold live credentials and are gitignored — never commit them.
+- The refresh token is scoped to gateway read/write for one device, not full
+  account access, but still worth protecting like a password.
+- The patched APK has certificate pinning disabled — fine for your own
+  debugging device, don't distribute it further.
 
-### Architecture
+## Credits
 
-- `api.py` -- `PointtApi`: token refresh (lazy, cached until near-expiry)
-  + thin GET/PUT wrappers. Raises `PointtAuthError` if the refresh token is
-  ever rejected outright.
-- `__init__.py` -- one `DataUpdateCoordinator` polling every 60s, fetching
-  all resource paths in `const.RESOURCE_PATHS` in one pass. Persists a
-  rotated refresh token back into the config entry.
-- `climate.py` / `sensor.py` / `switch.py` / `binary_sensor.py` /
-  `number.py` -- thin `CoordinatorEntity` wrappers reading from
-  `coordinator.data[key]`.
-
-### Known caveats
-
-- Only compile-checked (`python -m py_compile`), never run inside a real
-  Home Assistant instance -- no HA install in this sandbox. Watch the logs
-  on first real load for import-path mismatches (already fixed two:
-  `AddEntitiesCallback` not `AddEntityCallback`, `PRECISION_HALVES` lives in
-  `homeassistant.const` not `homeassistant.components.climate.const`).
-- `HVACMode.HEAT -> "manual"` / `HVACMode.AUTO -> "clock"` -- confirmed via
-  a real PUT captured from the app (`{"value": "manual"}` /
-  `{"value": "clock"}`), not a guess.
-- If the refresh token ever dies (revoked, password changed, or Bosch
-  changes the token lifetime policy), there's no in-HA recovery flow --
-  run `pointt_login.py` again and manually update `const.py`.
-
-## Security notes from this session
-
-- An early debug capture briefly wrote the real SingleKey ID account
-  password to disk in plaintext (login form POST body, captured before we
-  realized the addon should filter to API traffic only). That capture file
-  has been deleted. **The password should already have been rotated** as
-  flagged during the session -- if not, do that.
-- `pointt_credentials.json` holds a live, working refresh token. Don't
-  commit it anywhere public. It's scoped to gateway read/write for this one
-  device, not full account access, but still worth protecting.
-- The patched APK (`easycontrol-patched.apks`) has certificate pinning
-  disabled and an embedded trust for mitmproxy's CA -- fine for your own
-  debugging device, don't distribute it.
+- [ha-bosch-buderus-heating's setup guide](https://github.com/SoftwareSchmied/ha-bosch-buderus-heating/blob/main/docs/setup.md)
+  for the browser-login + scripted-token-exchange technique.
+- [homeassistant-nefit-easy](https://github.com/RaimondB/homeassistant-nefit-easy)
+  as the reference for the older, now-incompatible XMPP protocol.
