@@ -1,0 +1,13 @@
+{
+  "domain": "bosch_pointt",
+  "name": "Bosch EasyControl (Pointt API)",
+  "version": "0.1.0",
+  "codeowners": ["@stijnb1234"],
+  "config_flow": true,
+  "documentation": "https://github.com/stijnb1234/ha-bosch-pointt",
+  "issue_tracker": "https://github.com/stijnb1234/ha-bosch-pointt/issues",
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
+  "requirements": [],
+  "single_config_entry": true
+}

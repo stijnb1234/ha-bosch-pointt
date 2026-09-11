@@ -1,0 +1,25 @@
+
+===== XMPP RESPONSE =====
+Path: /gateway/uuid
+Length: 128
+Body: 'O/hdNPWCdLZr1pKlEFqwsijmk97ELHP6xMlvZu/c1Iru9Ve5aB7lhib3zgEkMWanjVuae7KO67wlyScV1vb8Aqxu5+K+Dxyh3sPIFsfiFU6emnkO59tZ2Lz+5dG9NEN4'
+
+===== XMPP RESPONSE =====
+Path: /system/interfaces
+Length: 128
+Body: '6dQhgJiGXe/T6QdylsFfv9/SW/bQWYCu4rB6n3+aOfpa0G4Px6KIhkNzthyh9TGZTmUajhdMzxXILJD9TtS8VU0AZqulz2da7a3jLpwLKlAGgpFHTbPJdui4bqQRBWTO'
+
+===== XMPP RESPONSE =====
+Path: /gateway/versionFirmware
+Length: 152
+Body: 'O/hdNPWCdLZr1pKlEFqwsmiVVA27pLfzS6NWMNqiWGrCwBx8fEp8n2VcSZRp8oc+WYsdyHMc1MqBZutyZzVylghnVzMy8o7UCOBng+gDMNYr5fA1+Qp+/xnqnssk9Mhps8VCE69eqK6MRu4ps/l/0A=='
+
+===== XMPP RESPONSE =====
+Path: /gateway/productID
+Length: 152
+Body: 'O/hdNPWCdLZr1pKlEFqwsv+Q3Zmv8MpGdHHPFOby8lbog6E50fUxTmAEkmOdzt3CJuk+rMkAc8MN7N1ryv/miGWMGnEZ+ckkbyVjW6j0g09VGLKiy2zJZLIGCyTcQNoq8uKRhiOjx5er7PFBL7CSwA=='
+
+===== XMPP RESPONSE =====
+Path: /gateway/DateTime
+Length: 172
+Body: 'O/hdNPWCdLZr1pKlEFqwsmmDPKRnPsGBXoAj8R7+NbuJI0WZ9rSqtCed+yp8xflBzIBiUPhe3g1YJja7nv7JQ7U2+/ZxaXO0CUExJrrbgHkMoAA+0o71OY1Wh5t3aouP5TP9kkJ9EXLTGXbBzDWlzVUhL+7d4ZH9RJjFRnj0cDk='

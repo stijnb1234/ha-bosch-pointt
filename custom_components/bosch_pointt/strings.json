@@ -1,0 +1,22 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Bosch EasyControl (Pointt API)",
+        "description": "Paste a refresh token (get one by running pointt_login.py -- see the repo README). The device is discovered automatically.",
+        "data": {
+          "refresh_token": "Refresh token"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Refresh token was rejected -- run pointt_login.py again to get a fresh one.",
+      "cannot_connect": "Couldn't reach the Bosch Pointt API. Check your network connection.",
+      "no_gateways": "No gateways found on this account."
+    },
+    "abort": {
+      "single_instance_allowed": "Already configured. Only a single instance is allowed.",
+      "already_configured": "This gateway is already configured."
+    }
+  }
+}

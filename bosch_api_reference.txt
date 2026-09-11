@@ -1,0 +1,259 @@
+Bosch Pointt REST API -- endpoints observed via mitmproxy capture (2026-09-11)
+Base URL: https://pointt-api.bosch-thermotechnology.com/pointt-api/api/v1
+Auth: header only (Authorization: Bearer <access_token>), stripped below.
+======================================================================
+
+GET /pointt-api/api/v1/gateways
+  response body: [{"deviceId":"101273687","deviceType":"rrc2"}]
+
+GET /pointt-api/api/v1/gateways/{id}/resource/devices/device1/thermostat/childLock/enabled
+  response body: {"id":"/devices/device1/thermostat/childLock/enabled","type":"stringValue","writeable":1,"recordable":0,"value":"false"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/devices/list
+  response body: {"id":"/devices/list","type":"deviceArray","writeable":0,"recordable":0,"value":[{"name":"RWFzeUNvbnRyb2w=","zone":1,"protocol":"no_protocol","id":1,"battery":"unknown","signal":0, "type":"thermostat"}]}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/dhwCircuits/dhw1/extraDhw
+  response body: {"id":"/dhwCircuits/dhw1/extraDhw","type":"stringValue","writeable":1,"recordable":0,"used":"false","available":"false","value":"off"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/dhwCircuits/dhw1/hotWaterSystem
+  response body: {"id":"/dhwCircuits/dhw1/hotWaterSystem","type":"stringValue","writeable":0,"recordable":0,"used":"true","available":"true","value":"instant"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/dhwCircuits/dhw1/operationMode
+  response body: {"id":"/dhwCircuits/dhw1/operationMode","type":"stringValue","writeable":1,"recordable":0,"used":"true","available":"true","infoText":"","value":"Off"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/dhwCircuits/dhw1/programs/pg1/week
+  response body: {"id":"/dhwCircuits/dhw1/programs/pg1/week","type":"dhwProgram","writeable":1,"recordable":0,"used":"true","available":"true","value":[{"d":"Su","t":390,"dhw":"high"},{"d":"Su","t":570,"dhw":"off"},{"d":"Su","t":1050,"dhw":"high"},{"d":"Su","t":1350,"dhw":"off"},{"d":"Mo","t":390,"dhw":"high"},{"d":"Mo","t":570,"dhw":"off"},{"d":"Mo","t":1050,"dhw":"high"},{"d":"Mo","t":1350,"dhw":"off"},{"d":"Tu"... (truncated)
+
+GET /pointt-api/api/v1/gateways/{id}/resource/dhwCircuits/dhw1/temperatureLevels/high
+  response body: {"id":"/dhwCircuits/dhw1/temperatureLevels/high","type":"floatValue","writeable":1,"recordable":0,"value":0.0,"used":"false","available":"false","unitOfMeasure":"C","minValue":10.000000,"maxValue":80.000000,"stepSize":1.000000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/dhwCircuits/dhw1/thermalDisinfect/state
+  response body: {"id":"/dhwCircuits/dhw1/thermalDisinfect/state","type":"stringValue","writeable":1,"recordable":0,"used":"false","available":"true","value":"off"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/energy/currency
+  response body: {"id":"/energy/currency","type":"stringValue","writeable":1,"recordable":0,"used":"true","available":"true","value":"4oKs"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/energy/electricity/dayAverage
+  response body: {"id":"/energy/electricity/dayAverage","type":"floatValue","writeable":0,"recordable":0,"value":0.0,"used":"true","available":"false","unitOfMeasure":"kWh","minValue":0.000000,"maxValue":33555.000000,"stepSize":0.001000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/energy/electricity/monthAverage
+  response body: {"id":"/energy/electricity/monthAverage","type":"floatValue","writeable":0,"recordable":0,"value":0.0,"used":"true","available":"false","unitOfMeasure":"kWh","minValue":0.000000,"maxValue":33555.000000,"stepSize":0.001000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/energy/gas/annualGoal
+  response body: {"id":"/energy/gas/annualGoal","type":"floatValue","writeable":1,"recordable":0,"value":0.00,"used":"true","available":"true","unitOfMeasure":"kWh","minValue":0.000000,"maxValue":1000000.000000,"stepSize":1.000000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/energy/gas/price
+  response body: {"id":"/energy/gas/price","type":"floatValue","writeable":1,"recordable":0,"value":0.00000,"used":"true","available":"true","unitOfMeasure":"","minValue":0.000000,"maxValue":1000.000000,"stepSize":0.000010}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/energy/gas/type
+  response body: {"id":"/energy/gas/type","type":"stringValue","writeable":1,"recordable":0,"used":"true","available":"true","value":"natural"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/energy/gas/unit
+  response body: {"id":"/energy/gas/unit","type":"stringValue","writeable":1,"recordable":0,"used":"true","available":"true","value":"m3"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/energy/history
+  response body: {"id":"/energy/history","type":"energyRecordings","writeable":0,"recordable":0,"used":"true","available":"true","value":[{"d":"29-09-2021","T":10.7,"gCh":31.76,"gHw":9.96},{"d":"30-09-2021","T":11.1,"gCh":42.49,"gHw":6.94},{"d":"01-10-2021","T":13.9,"gCh":36.87,"gHw":3.65},{"d":"02-10-2021","T":14.6,"gCh":18.02,"gHw":15.82},{"d":"03-10-2021","T":14.6,"gCh":33.41,"gHw":7.60},{"d":"04-10-2021","T":1... (truncated)
+
+GET /pointt-api/api/v1/gateways/{id}/resource/energy/history?date={date}
+  response body: {"id":"/energy/history","type":"energyRecordings","writeable":0,"recordable":0,"used":"true","available":"true","value":[{"d":"29-09-2021","T":10.7,"gCh":31.76,"gHw":9.96},{"d":"30-09-2021","T":11.1,"gCh":42.49,"gHw":6.94},{"d":"01-10-2021","T":13.9,"gCh":36.87,"gHw":3.65},{"d":"02-10-2021","T":14.6,"gCh":18.02,"gHw":15.82},{"d":"03-10-2021","T":14.6,"gCh":33.41,"gHw":7.60},{"d":"04-10-2021","T":1... (truncated)
+
+GET /pointt-api/api/v1/gateways/{id}/resource/energy/offset
+  response body: {"id":"/energy/offset","type":"floatValue","writeable":1,"recordable":0,"value":100.0,"used":"true","available":"true","unitOfMeasure":"%","minValue":1.000000,"maxValue":200.000000,"stepSize":1.000000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/hmip/versionApplication
+  response body: {"id":"/gateway/hmip/versionApplication","type":"stringValue","writeable":0,"recordable":0,"value":"4.4.28"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/hmip/versionOS
+  response body: {"id":"/gateway/hmip/versionOS","type":"stringValue","writeable":0,"recordable":0,"value":"1.80.0"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/notificationLight/enabled
+  response body: {"id":"/gateway/notificationLight/enabled","type":"stringValue","writeable":1,"recordable":0,"value":"true"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/pirSensitivity
+  response body: {"id":"/gateway/pirSensitivity","type":"stringValue","writeable":1,"recordable":0,"value":"high"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/productType
+  response body: {"id":"/gateway/productType","type":"stringValue","writeable":0,"recordable":0,"value":"RRC 2.0"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/time/current
+  response body: {"id":"/gateway/time/current","type":"stringValue","writeable":1,"recordable":0,"value":"2026-09-11T13:45:15+02:00 Fr"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/time/timeZone
+  response body: {"id":"/gateway/time/timeZone","type":"stringValue","writeable":1,"recordable":0,"value":"Europe\/Amsterdam"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/tosAccepted
+  response body: {"id":"/gateway/tosAccepted","type":"stringValue","writeable":1,"recordable":0,"value":"3.0"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/ui/icons
+  response body: {"id":"/gateway/ui/icons","type":"stringArray","writeable":0,"recordable":0,"value":["","","","","eco on","ch off"]}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/ui/splashScreen
+  response body: {"id":"/gateway/ui/splashScreen","type":"stringValue","writeable":1,"recordable":0,"value":"clock"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/uuid
+  response body: {"id":"/gateway/uuid","type":"stringValue","writeable":0,"recordable":0,"value":"101273687"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/versionFirmware
+  response body: {"id":"/gateway/versionFirmware","type":"stringValue","writeable":0,"recordable":0,"value":"05.04.00"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/versionFirmwareBuild
+  response body: {"id":"/gateway/versionFirmwareBuild","type":"stringValue","writeable":0,"recordable":0,"value":"RPP_2305a5f9e+"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/versionHardware
+  response body: {"id":"/gateway/versionHardware","type":"stringValue","writeable":0,"recordable":0,"value":"10"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/wifi/versionFirmware
+  response body: {"id":"/gateway/wifi/versionFirmware","type":"stringValue","writeable":0,"recordable":0,"value":"01.14.00"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/wifi/versionFirmwareBuild
+  response body: {"id":"/gateway/wifi/versionFirmwareBuild","type":"stringValue","writeable":0,"recordable":0,"value":"RPP_a2336587+"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/gateway/wizardStepsDone
+  response body: {"id":"/gateway/wizardStepsDone","type":"stringArray","writeable":1,"recordable":0,"value":["REGISTER","RRC","HMIP","OPTIONS"]}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/heatSources/enabled
+  response body: {"id":"/heatSources/enabled","type":"stringValue","writeable":1,"recordable":0,"used":"false","available":"false","value":"true"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/heatSources/info
+  response body: {"id":"/heatSources/info","type":"systeminfo","writeable":0,"recordable":0,"used":"true","available":"true","value":[{"Tok":"8","Id":"1477","Ver":"11","No":"32901760000087736700500"}]}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/heatSources/modulation
+  response body: {"id":"/heatSources/modulation","type":"stringArray","writeable":0,"recordable":0,"used":"true","available":"true","value":["70","0"]}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/heatSources/refillNeeded
+  response body: {"id":"/heatSources/refillNeeded","type":"stringValue","writeable":0,"recordable":0,"used":"true","available":"true","value":"false"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/heatSources/type
+  response body: {"id":"/heatSources/type","type":"stringValue","writeable":0,"recordable":0,"used":"true","available":"true","value":"Boiler"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/heatingCircuits/hc1/boostRemainingTime
+  response body: {"id":"/heatingCircuits/hc1/boostRemainingTime","type":"floatValue","writeable":0,"recordable":0,"value":0.0,"used":"false","available":"false","unitOfMeasure":"mins","minValue":0.000000,"maxValue":480.000000,"stepSize":1.000000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/heatingCircuits/hc1/boostShortcut
+  response body: {"id":"/heatingCircuits/hc1/boostShortcut","type":"boostShortcutStruct","writeable":1,"recordable":0,"used":"true","available":"true","value":[{"mode":"off","temperature":25.0,"duration":1,"zones":[1],"allowedZones":[1]}]}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/heatingCircuits/hc1/control
+  response body: {"id":"/heatingCircuits/hc1/control","type":"stringValue","writeable":1,"recordable":0,"used":"true","available":"true","value":"room"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/heatingCircuits/hc1/nightSwitchMode
+  response body: {"id":"/heatingCircuits/hc1/nightSwitchMode","type":"stringValue","writeable":1,"recordable":0,"used":"false","available":"false","value":"automatic"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/heatingCircuits/hc1/nightThreshold
+  response body: {"id":"/heatingCircuits/hc1/nightThreshold","type":"floatValue","writeable":1,"recordable":0,"value":14.0,"used":"false","available":"false","unitOfMeasure":"C","minValue":5.000000,"maxValue":30.000000,"stepSize":0.500000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/heatingCircuits/hc1/operatingSeason
+  response body: {"id":"/heatingCircuits/hc1/operatingSeason","type":"stringValue","writeable":0,"recordable":0,"used":"false","available":"false","value":"heating"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/heatingCircuits/hc1/powerSetpoint
+  response body: {"id":"/heatingCircuits/hc1/powerSetpoint","type":"floatValue","writeable":0,"recordable":0,"value":0.0,"used":"true","available":"true","unitOfMeasure":"%","minValue":0.000000,"maxValue":100.000000,"stepSize":1.000000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/heatingCircuits/hc1/seasonOptMode
+  response body: {"id":"/heatingCircuits/hc1/seasonOptMode","type":"stringValue","writeable":1,"recordable":0,"used":"false","available":"false","value":"always_heating","allowedValues":["always_heating"]}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/heatingCircuits/hc1/setpointOptimization
+  response body: {"id":"/heatingCircuits/hc1/setpointOptimization","type":"stringValue","writeable":1,"recordable":0,"used":"true","available":"true","value":"on"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/heatingCircuits/hc1/suWiSwitchMode
+  response body: {"id":"/heatingCircuits/hc1/suWiSwitchMode","type":"stringValue","writeable":1,"recordable":0,"used":"false","available":"false","value":"automatic"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/heatingCircuits/hc1/suWiThreshold
+  response body: {"id":"/heatingCircuits/hc1/suWiThreshold","type":"floatValue","writeable":1,"recordable":0,"value":20.0,"unitOfMeasure":"C","minValue":10.000000,"maxValue":30.000000,"stepSize":0.500000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/notifications
+  response body: {"id":"/notifications","type":"errorList","writeable":0,"recordable":0,"used":"true","available":"true","value":[]}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/programs/list
+  response body: {"id":"/programs/list","type":"programArray","writeable":0,"recordable":0,"value":[{"id":1,"name":"U3RhbmRhYXJk"}]}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/programs/pg1/name
+  response body: {"id":"/programs/pg1/name","type":"stringValue","writeable":1,"recordable":0,"value":"U3RhbmRhYXJk"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/programs/pg1/week
+  response body: {"id":"/programs/pg1/week","type":"weekProgram","writeable":1,"recordable":0,"value":[{"d":"Su","t":480,"Th":19.00,"name":0},{"d":"Su","t":1380,"Th":15.00,"name":0},{"d":"Mo","t":420,"Th":19.00,"name":0},{"d":"Mo","t":540,"Th":19.00,"name":0},{"d":"Mo","t":960,"Th":19.00,"name":0},{"d":"Mo","t":1380,"Th":15.00,"name":0},{"d":"Tu","t":420,"Th":19.00,"name":0},{"d":"Tu","t":540,"Th":17.00,"name":0},... (truncated)
+
+GET /pointt-api/api/v1/gateways/{id}/resource/solarCircuits/sc1/collectorTemperature
+  response body: {"id":"/solarCircuits/sc1/collectorTemperature","type":"floatValue","writeable":0,"recordable":0,"value":0.0,"used":"false","available":"false","unitOfMeasure":"C","minValue":-3276.000000,"maxValue":3276.000000,"stepSize":0.100000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/solarCircuits/sc1/dhwTankBottomTemperature
+  response body: {"id":"/solarCircuits/sc1/dhwTankBottomTemperature","type":"floatValue","writeable":0,"recordable":0,"value":0.0,"used":"false","available":"false","unitOfMeasure":"C","minValue":-3276.000000,"maxValue":3276.000000,"stepSize":0.100000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/solarCircuits/sc1/pumpModulation
+  response body: {"id":"/solarCircuits/sc1/pumpModulation","type":"floatValue","writeable":0,"recordable":0,"value":0.0,"used":"false","available":"false","unitOfMeasure":"%","minValue":0.000000,"maxValue":100.000000,"stepSize":1.000000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/solarCircuits/sc1/totalSolarGain
+  response body: {"id":"/solarCircuits/sc1/totalSolarGain","type":"floatValue","writeable":0,"recordable":0,"value":0.0,"used":"false","available":"false","unitOfMeasure":"kWh","minValue":0.000000,"maxValue":429496704.000000,"stepSize":0.100000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/system/appliance/systemPressure
+  response body: {"id":"/system/appliance/systemPressure","type":"floatValue","writeable":0,"recordable":0,"value":1.9,"used":"true","available":"true","unitOfMeasure":"bar","minValue":0.000000,"maxValue":25.000000,"stepSize":0.100000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/system/awayMode/enabled
+  response body: {"id":"/system/awayMode/enabled","type":"stringValue","writeable":1,"used":"true","recordable":0,"value":"false"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/system/awayMode/temperature
+  response body: {"id":"/system/awayMode/temperature","type":"floatValue","writeable":1,"recordable":0,"value":16.0,"unitOfMeasure":"C","minValue":5.000000,"maxValue":30.000000,"stepSize":0.500000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/system/fireplace/enabled
+  response body: {"id":"/system/fireplace/enabled","type":"stringValue","writeable":1,"recordable":0,"used":"true","available":"true","value":"false"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/system/hydraulicBalancing/enabled
+  response body: {"id":"/system/hydraulicBalancing/enabled","type":"stringValue","writeable":1,"recordable":0,"used":"false","available":"false","value":"false"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/system/info
+  response body: {"id":"/system/info","type":"systeminfo","writeable":0,"recordable":0,"used":"true","available":"true","value":[{"Tok":"8","Id":"123","Ver":"NF7.0","No":"87379100290121280193"}]}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/system/interfaces/ems/connectionType
+  response body: {"id":"/system/interfaces/ems/connectionType","type":"stringValue","writeable":0,"recordable":0,"value":"wired"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/system/openWindowDetection/duration
+  response body: {"id":"/system/openWindowDetection/duration","type":"floatValue","writeable":1,"recordable":0,"value":15.0,"unitOfMeasure":"mins","minValue":5.000000,"maxValue":60.000000,"stepSize":5.000000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/system/openWindowDetection/enabled
+  response body: {"id":"/system/openWindowDetection/enabled","type":"stringValue","writeable":1,"recordable":0,"used":"false","available":"false","value":"off"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/system/openWindowDetection/temperature
+  response body: {"id":"/system/openWindowDetection/temperature","type":"floatValue","writeable":1,"recordable":0,"value":12.0,"unitOfMeasure":"C","minValue":5.000000,"maxValue":30.000000,"stepSize":0.500000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/system/sensors/humidity/indoor_h1
+  response body: {"id":"/system/sensors/humidity/indoor_h1","type":"floatValue","writeable":0,"recordable":0,"value":61.7,"unitOfMeasure":"%","minValue":0.000000,"maxValue":100.000000,"stepSize":1.000000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/system/sensors/temperatures/offset
+  response body: {"id":"/system/sensors/temperatures/offset","type":"floatValue","writeable":1,"recordable":0,"value":0.0,"unitOfMeasure":"C","minValue":-2.000000,"maxValue":2.000000,"stepSize":0.500000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/system/sensors/temperatures/outdoor_t1
+  response body: {"id":"/system/sensors/temperatures/outdoor_t1","type":"floatValue","recordable":0,"writeable":0,"value":15.0,"unitOfMeasure":"C","status":"ok","srcType":"virtual","minValue":-25.000000,"maxValue":50.000000,"stepSize":1.000000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/zones/list
+  response body: {"id":"/zones/list","type":"zoneArray","writeable":0,"recordable":0,"value":[{"id":1,"name":"V29vbmthbWVy","icon":"living room","program":1,"temp":21.6,"status":"idle","functionIcons":""}]}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/zones/zn1/clockOverride/temperatureHeating
+  response body: {"id":"/zones/zn1/clockOverride/temperatureHeating","type":"floatValue","writeable":1,"recordable":0,"value":0.0,"unitOfMeasure":"C","minValue":0.000000,"maxValue":30.000000,"stepSize":0.500000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/zones/zn1/clockProgram
+  response body: {"id":"/zones/zn1/clockProgram","type":"floatValue","writeable":1,"recordable":0,"value":1.0,"used":"true","unitOfMeasure":"","minValue":0.000000,"maxValue":24.000000,"stepSize":1.000000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/zones/zn1/name
+  response body: {"id":"/zones/zn1/name","type":"stringValue","writeable":1,"recordable":0,"value":"V29vbmthbWVy"}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/zones/zn1/nextSetpoint
+  response body: {"id":"/zones/zn1/nextSetpoint","type":"floatValue","writeable":0,"recordable":0,"value":19.0,"used":"true","unitOfMeasure":"C","minValue":0.000000,"maxValue":30.000000,"stepSize":0.500000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/zones/zn1/temperatureActual
+  response body: {"id":"/zones/zn1/temperatureActual","type":"floatValue","writeable":0,"recordable":0,"value":21.6,"used":"true","unitOfMeasure":"C","minValue":5.000000,"maxValue":30.000000,"stepSize":0.500000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/zones/zn1/temperatureHeatingSetpoint
+  response body: {"id":"/zones/zn1/temperatureHeatingSetpoint","type":"floatValue","writeable":0,"recordable":0,"value":19.0,"used":"true","unitOfMeasure":"C","minValue":5.000000,"maxValue":30.000000,"stepSize":0.500000}
+
+GET /pointt-api/api/v1/gateways/{id}/resource/zones/zn1/userMode
+  response body: {"id":"/zones/zn1/userMode","type":"stringValue","writeable":1,"used":"true","recordable":0,"value":"clock"}
+
+PUT /pointt-api/api/v1/gateways/{id}/resource/gateway/tosAccepted
+  request body:  {"value":"3.0"}
+  response body: 
+
+PUT /pointt-api/api/v1/gateways/{id}/resource/zones/zn1/clockOverride/temperatureHeating
+  request body:  {"value":18.5}
+  response body: 
+
+PUT /pointt-api/api/v1/gateways/{id}/resource/zones/zn1/userMode
+  request body:  {"value":"manual"}
+  response body: 

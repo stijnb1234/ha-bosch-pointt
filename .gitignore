@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+
+# live credentials -- never commit
+pointt_credentials.json
+custom_components/bosch_pointt/secrets_local.py
+archive_legacy_xmpp/keys.txt
+
+# large binary, repackaged third-party app -- don't redistribute
+easycontrol-patched.apks
