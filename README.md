@@ -91,7 +91,7 @@ Full endpoint/response reference (redacted): [`bosch_api_reference.txt`](bosch_a
   equivalent.
 - If the refresh token is fully revoked, there's no in-HA recovery flow — re-run `pointt_login.py` and re-add the
   integration with the new token.
-- Only compile-checked and tested against one real EasyControl CT200 B unit — other EasyControl hardware/firmware may
+- Only compile-checked and tested against one real EasyControl CT200 unit — other EasyControl hardware/firmware may
   expose slightly different resource paths.
 
 ## Other files in this repo
@@ -102,8 +102,6 @@ These support development/debugging and aren't needed to just run the integratio
   checks.
 - **`mitm_dump_bosch.py`** — mitmproxy addon used to originally capture the API from the official app; useful again if
   Bosch changes the API.
-- **`easycontrol-patched.apks`** — patched EasyControl APK (cert pinning disabled) used for that capture. Not
-  redistributed generally — see Security notes.
 - **`archive_legacy_xmpp/`** — the original (dead-end) XMPP investigation that led to discovering the Pointt API. Kept
   for the reasoning trail.
 
@@ -113,7 +111,6 @@ These support development/debugging and aren't needed to just run the integratio
   hold live credentials and are gitignored — never commit them.
 - The refresh token is scoped to gateway read/write for one device, not full account access, but still worth protecting
   like a password.
-- The patched APK has certificate pinning disabled — fine for your own debugging device, don't distribute it further.
 
 ## Credits
 
