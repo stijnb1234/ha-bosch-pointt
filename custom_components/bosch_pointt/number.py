@@ -6,9 +6,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import BoschPointtCoordinator
+from . import BoschPointtEntity
 from .const import DOMAIN, RESOURCE_PATHS
 
 
@@ -32,7 +31,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     )
 
 
-class BoschPointtNumber(CoordinatorEntity[BoschPointtCoordinator], NumberEntity):
+class BoschPointtNumber(BoschPointtEntity, NumberEntity):
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     def __init__(self, coordinator, key: str, name: str, min_value: float, max_value: float, step: float) -> None:

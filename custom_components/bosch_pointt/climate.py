@@ -10,9 +10,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import PRECISION_HALVES, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import BoschPointtCoordinator
+from . import BoschPointtCoordinator, BoschPointtEntity
 from .const import DOMAIN, RESOURCE_PATHS
 
 # Confirmed via mitmproxy capture: app PUTs {"value": "clock"} / {"value": "manual"}.
@@ -25,7 +24,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     async_add_entities([BoschPointtClimate(coordinator, entry)])
 
 
-class BoschPointtClimate(CoordinatorEntity[BoschPointtCoordinator], ClimateEntity):
+class BoschPointtClimate(BoschPointtEntity, ClimateEntity):
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_precision = PRECISION_HALVES
     _attr_target_temperature_step = 0.5

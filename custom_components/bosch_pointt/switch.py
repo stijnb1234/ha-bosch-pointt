@@ -10,9 +10,8 @@ from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import BoschPointtCoordinator
+from . import BoschPointtEntity
 from .const import DOMAIN, RESOURCE_PATHS
 
 
@@ -32,7 +31,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     )
 
 
-class BoschPointtSwitch(CoordinatorEntity[BoschPointtCoordinator], SwitchEntity):
+class BoschPointtSwitch(BoschPointtEntity, SwitchEntity):
     def __init__(self, coordinator, key: str, name: str, on_value: str, off_value: str, enabled_default: bool = True) -> None:
         super().__init__(coordinator)
         self._key = key

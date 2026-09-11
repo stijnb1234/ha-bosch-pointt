@@ -5,9 +5,8 @@ from homeassistant.components.binary_sensor import BinarySensorDeviceClass, Bina
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import BoschPointtCoordinator
+from . import BoschPointtEntity
 from .const import DOMAIN
 
 
@@ -22,7 +21,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     )
 
 
-class BoschPointtBinarySensor(CoordinatorEntity[BoschPointtCoordinator], BinarySensorEntity):
+class BoschPointtBinarySensor(BoschPointtEntity, BinarySensorEntity):
     def __init__(self, coordinator, key: str, name: str, device_class) -> None:
         super().__init__(coordinator)
         self._key = key

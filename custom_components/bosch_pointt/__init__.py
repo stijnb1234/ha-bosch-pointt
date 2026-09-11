@@ -7,7 +7,12 @@ import logging
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.update_coordinator import (
+    CoordinatorEntity,
+    DataUpdateCoordinator,
+    UpdateFailed,
+)
 
 from .api import PointtApi, PointtAuthError
 from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, RESOURCE_PATHS
@@ -48,6 +53,20 @@ class BoschPointtCoordinator(DataUpdateCoordinator):
                 self.entry, data={**self.entry.data, "refresh_token": self.api.refresh_token}
             )
         return data
+
+
+class BoschPointtEntity(CoordinatorEntity[BoschPointtCoordinator]):
+    """Base for all Bosch Pointt entities -- groups them under one device."""
+
+    def __init__(self, coordinator: BoschPointtCoordinator) -> None:
+        super().__init__(coordinator)
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, coordinator.device_id)},
+            name="Bosch EasyControl",
+            manufacturer="Bosch",
+            model="EasyControl",
+            sw_version=coordinator.data.get("firmware_version") if coordinator.data else None,
+        )
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

@@ -6,9 +6,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import PERCENTAGE, UnitOfPressure, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import BoschPointtCoordinator
+from . import BoschPointtEntity
 from .const import DOMAIN
 
 
@@ -27,7 +26,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     )
 
 
-class BoschPointtSensor(CoordinatorEntity[BoschPointtCoordinator], SensorEntity):
+class BoschPointtSensor(BoschPointtEntity, SensorEntity):
     def __init__(self, coordinator, key: str, name: str, device_class, unit) -> None:
         super().__init__(coordinator)
         self._key = key
@@ -41,7 +40,7 @@ class BoschPointtSensor(CoordinatorEntity[BoschPointtCoordinator], SensorEntity)
         return self.coordinator.data.get(self._key)
 
 
-class BoschPointtModulationSensor(CoordinatorEntity[BoschPointtCoordinator], SensorEntity):
+class BoschPointtModulationSensor(BoschPointtEntity, SensorEntity):
     """heatSources/modulation returns a stringArray, e.g. ["70", "0"] -- first
     element is current burner modulation %. Second element's meaning is
     unconfirmed (always seen as "0" so far)."""
@@ -64,7 +63,7 @@ class BoschPointtModulationSensor(CoordinatorEntity[BoschPointtCoordinator], Sen
             return None
 
 
-class BoschPointtNotificationsSensor(CoordinatorEntity[BoschPointtCoordinator], SensorEntity):
+class BoschPointtNotificationsSensor(BoschPointtEntity, SensorEntity):
     """Active fault/error list -- the equivalent of the reference
     integration's boiler cause codes. Raw entries exposed as an attribute
     since we've never seen a populated one (no fault occurred during
