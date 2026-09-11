@@ -1,0 +1,20 @@
+get_resource:
+  fields:
+    path:
+      required: true
+      example: zones/zn1/temperatureActual
+      selector:
+        text:
+
+put_resource:
+  fields:
+    path:
+      required: true
+      example: zones/zn1/clockOverride/temperatureHeating
+      selector:
+        text:
+    value:
+      required: true
+      example: 18.5
+      selector:
+        object:

@@ -18,5 +18,31 @@
       "single_instance_allowed": "Already configured. Only a single instance is allowed.",
       "already_configured": "This gateway is already configured."
     }
+  },
+  "services": {
+    "get_resource": {
+      "name": "Get resource",
+      "description": "Read one raw Pointt API resource and return the full response (value, writeable, allowed values, ...). For debugging and API exploration.",
+      "fields": {
+        "path": {
+          "name": "Path",
+          "description": "Resource path below /gateways/{id}/resource/, e.g. zones/zn1/userMode. A directory path such as zones/zn1 may list its children."
+        }
+      }
+    },
+    "put_resource": {
+      "name": "Put resource",
+      "description": "Write a raw value to one Pointt API resource. Advanced: this bypasses all entity logic and writes straight to your thermostat.",
+      "fields": {
+        "path": {
+          "name": "Path",
+          "description": "Resource path below /gateways/{id}/resource/, e.g. zones/zn1/clockOverride/temperatureHeating."
+        },
+        "value": {
+          "name": "Value",
+          "description": "Number or string, exactly as the API expects it (booleans are the strings \"true\"/\"false\")."
+        }
+      }
+    }
   }
 }

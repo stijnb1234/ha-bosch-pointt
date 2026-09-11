@@ -21,6 +21,7 @@ except ImportError:
 DEFAULT_SCAN_INTERVAL = 60  # seconds
 
 ZONE_ID = "zn1"
+ZONE_NUMBER = 1  # same zone, as numbered in zones/list
 
 RESOURCE_PATHS = {
     "temperature_actual": f"zones/{ZONE_ID}/temperatureActual",
@@ -43,4 +44,7 @@ RESOURCE_PATHS = {
     "away_mode_temperature": "system/awayMode/temperature",
     "open_window_detection_temperature": "system/openWindowDetection/temperature",
     "sensor_temperature_offset": "system/sensors/temperatures/offset",
+    "zones": "zones/list",
+    "ui_icons": "gateway/ui/icons",
+    "heating_control": "heatingCircuits/hc1/control",
 }

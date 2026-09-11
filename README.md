@@ -12,7 +12,8 @@ Home Assistant integration for the **Bosch EasyControl**thermostats that talk to
 | `climate`       | Thermostat: current/target temperature, clock (auto) / manual mode                                                                 |
 | `sensor`        | Outdoor Temperature, Indoor Humidity, Firmware Version, Hot Water System, System Pressure, Burner Modulation, Active Notifications |
 | `switch`        | Away Mode, Fireplace Mode, Child Lock, Extra Hot Water*, Notification Light                                                        |
-| `binary_sensor` | Refill Needed                                                                                                                      |
+| `binary_sensor` | Refill Needed, Burner Active                                                                                                       |
+| diagnostic      | Zone Status (with display icons), Heating Control                                                                                  |
 | `number`        | Away Mode Temperature, Open Window Detection Temperature, Outdoor Sensor Offset                                                    |
 
 All entities are grouped under a single "Bosch EasyControl" device.
@@ -72,6 +73,19 @@ authorization code for tokens and writes the refresh token to `pointt_credential
 > same way afterward: it holds a live, working (if narrowly-scoped) refresh
 > token for your Bosch account.
 
+## Actions (advanced)
+
+For API exploration and debugging, the integration registers two raw actions (Developer Tools → Actions):
+
+- `bosch_pointt.get_resource` — `path: zones/zn1/userMode` → returns the full API response (value, `writeable`,
+  allowed values, ...). Directory paths such as `zones/zn1` may list their children.
+- `bosch_pointt.put_resource` — `path` + `value` → writes straight to the thermostat, bypassing all entity logic.
+  Returns the read-back value when "return response" is enabled.
+
+Paths are restricted to plain resource paths below `/gateways/{id}/resource/`. These actions use the integration's
+own session. Don't also run `pointt_client.py` with the same refresh token: tokens rotate on every use, and the
+second consumer logs the other one out.
+
 ## How it works
 
 - **API**: `https://pointt-api.bosch-thermotechnology.com/pointt-api/api/v1`
@@ -101,7 +115,8 @@ These support development/debugging and aren't needed to just run the integratio
 - **`pointt_client.py`** — standalone script using the same API client logic without Home Assistant, for quick manual
   checks.
 - **`mitm_dump_bosch.py`** — mitmproxy addon used to originally capture the API from the official app; useful again if
-  Bosch changes the API.
+  Bosch changes the API. `mitmdump -s mitm_dump_bosch.py`; output file via `BOSCH_MITM_OUT`, credentials redacted
+  unless `BOSCH_MITM_RAW=1`.
 - **`archive_legacy_xmpp/`** — the original (dead-end) XMPP investigation that led to discovering the Pointt API. Kept
   for the reasoning trail.
 

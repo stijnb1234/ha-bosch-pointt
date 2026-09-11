@@ -1,7 +1,7 @@
 {
   "domain": "bosch_pointt",
   "name": "Bosch EasyControl (Pointt API)",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "codeowners": ["@stijnb1234"],
   "config_flow": true,
   "documentation": "https://github.com/stijnb1234/ha-bosch-pointt",
