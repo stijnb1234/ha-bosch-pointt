@@ -27,6 +27,7 @@ RESOURCE_PATHS = {
     "temperature_actual": f"zones/{ZONE_ID}/temperatureActual",
     "temperature_setpoint": f"zones/{ZONE_ID}/temperatureHeatingSetpoint",
     "clock_override": f"zones/{ZONE_ID}/clockOverride/temperatureHeating",
+    "manual_setpoint": f"zones/{ZONE_ID}/manualTemperatureHeating",
     "user_mode": f"zones/{ZONE_ID}/userMode",
     "outdoor_temp": "system/sensors/temperatures/outdoor_t1",
     "indoor_humidity": "system/sensors/humidity/indoor_h1",
