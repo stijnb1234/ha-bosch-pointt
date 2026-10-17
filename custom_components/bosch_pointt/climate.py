@@ -56,9 +56,13 @@ class BoschPointtClimate(BoschPointtEntity, ClimateEntity):
         temperature = kwargs.get("temperature")
         if temperature is None:
             return
-        await self.coordinator.api.put_resource(
-            self.coordinator.device_id, RESOURCE_PATHS["clock_override"], temperature
-        )
+        # Manual mode has its own persistent setpoint; in clock mode the
+        # override lasts until the program's next switch point.
+        if self.coordinator.data.get("user_mode") == MODE_HA_TO_DEVICE[HVACMode.HEAT]:
+            path = RESOURCE_PATHS["manual_setpoint"]
+        else:
+            path = RESOURCE_PATHS["clock_override"]
+        await self.coordinator.api.put_resource(self.coordinator.device_id, path, temperature)
         await self.coordinator.async_request_refresh()
 
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
