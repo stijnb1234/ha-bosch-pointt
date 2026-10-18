@@ -1,3 +1,5 @@
+<p align="center"><img src="custom_components/bosch_pointt/brand/logo@2x.png" alt="Bosch EasyControl Pointt API" width="360"></p>
+
 # Bosch EasyControl (Pointt API) for Home Assistant
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
